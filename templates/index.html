@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Genre Segmentation</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; }
+        .container { width: 50%; margin: auto; padding: 20px; background: white; box-shadow: 0px 0px 10px gray; }
+        h1 { color: #1DB954; }
+        button { background-color: #1DB954; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        #output { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spotify Genre Segmentation</h1>
+        <p>Click the button to predict a genre and play a song.</p>
+        <button onclick="predictGenre()">Predict Genre</button>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function predictGenre() {
+            let sampleFeatures = { "features": [0.7, 0.8, -5.0, 0.1, 0.3] };
+
+            fetch("/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(sampleFeatures)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("output").innerHTML = 
+                    "Predicted Genre: " + data.genre + "<br>" +
+                    "<audio controls autoplay><source src='" + data.song + "' type='audio/mpeg'>Your browser does not support the audio tag.</audio>";
+            })
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
